@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="GARAGE.">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%230a0a0f'/><text x='90' y='75' font-family='sans-serif' font-size='46' font-weight='bold' fill='%23e0e0e0' text-anchor='middle'>G.</text><rect x='40' y='92' width='100' height='3' rx='1.5' fill='%23ff4444'/><text x='90' y='125' font-family='sans-serif' font-size='15' fill='%23888' text-anchor='middle' letter-spacing='4'>GARAGE</text></svg>">
+<title>GARAGE.</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#0a0a0f;--bg2:#111118;--bg3:#1a1a24;--bg4:#22222e;
+--text:#e8e8ec;--text2:#9898a8;--text3:#606070;
+--accent:#ff3b3b;--accent2:#ff6b4a;--accent-glow:rgba(255,59,59,.15);
+--green:#22c55e;--yellow:#f59e0b;--blue:#3b82f6;
+--card:rgba(20,20,30,.85);--glass:rgba(255,255,255,.04);
+--border:rgba(255,255,255,.06);--radius:16px;--radius-sm:10px;
+--font:'Segoe UI',system-ui,-apple-system,sans-serif;
+--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);overflow:hidden;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+body{display:flex;flex-direction:column;padding-top:var(--safe-top)}
+#app{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;padding-bottom:90px}
+#app::-webkit-scrollbar{display:none}
+
+/* HEADER */
+.header{position:sticky;top:0;z-index:100;padding:16px 20px 12px;background:rgba(10,10,15,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.header h1{font-size:20px;font-weight:800;letter-spacing:1px}
+.header h1 span{color:var(--accent)}
+.header-sub{font-size:11px;color:var(--text3);letter-spacing:2px;text-transform:uppercase}
+.header-back{background:none;border:none;color:var(--text);font-size:22px;padding:8px;margin:-8px;cursor:pointer;display:none}
+.header-actions{display:flex;gap:8px}
+.header-btn{background:var(--glass);border:1px solid var(--border);color:var(--text);width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:all .2s}
+.header-btn:active{transform:scale(.9);background:var(--accent-glow)}
+
+/* NAV */
+.nav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(10,10,15,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;padding:6px 8px calc(6px + var(--safe-bottom));justify-content:space-around}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 12px;border-radius:12px;cursor:pointer;transition:all .2s;border:none;background:none;color:var(--text3);font-size:10px;letter-spacing:.5px;min-width:60px}
+.nav-item.active{color:var(--accent)}
+.nav-item.active .nav-icon{background:var(--accent-glow);color:var(--accent)}
+.nav-icon{font-size:20px;width:36px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:14px;transition:all .2s}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin:0 16px 12px;backdrop-filter:blur(10px)}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.card-title{font-size:13px;color:var(--text2);text-transform:uppercase;letter-spacing:1.5px;font-weight:600}
+.card-value{font-size:28px;font-weight:800;letter-spacing:-1px}
+.card-accent{color:var(--accent)}
+
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 16px 12px}
+.stat-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 12px;text-align:center}
+.stat-val{font-size:20px;font-weight:800;margin-bottom:2px}
+.stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px}
+
+/* HERO */
+.hero-img{width:calc(100% - 32px);margin:12px 16px;border-radius:var(--radius);height:200px;object-fit:cover;background:var(--bg3);display:block;border:1px solid var(--border)}
+.hero-placeholder{width:calc(100% - 32px);margin:12px 16px;border-radius:var(--radius);height:200px;background:linear-gradient(135deg,var(--bg2),var(--bg3));border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--text3);cursor:pointer;font-size:13px;transition:all .3s}
+.hero-placeholder:active{border-color:var(--accent);color:var(--accent)}
+
+/* SECTION TITLE */
+.sec-title{padding:20px 20px 10px;font-size:13px;color:var(--text3);text-transform:uppercase;letter-spacing:2px;font-weight:600}
+
+/* LIST */
+.list-item{display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
+.list-item:active{background:var(--glass)}
+.list-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.list-info{flex:1;min-width:0}
+.list-info h3{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list-info p{font-size:12px;color:var(--text2);margin-top:2px}
+.list-arrow{color:var(--text3);font-size:18px}
+.list-badge{background:var(--accent);color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;min-width:24px;text-align:center}
+
+/* BUTTONS */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 24px;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;border:none;width:100%}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-secondary{background:var(--glass);color:var(--text);border:1px solid var(--border)}
+.btn-sm{padding:10px 16px;font-size:13px;border-radius:8px}
+.fab{position:fixed;bottom:calc(80px + var(--safe-bottom));right:20px;width:56px;height:56px;border-radius:50%;background:var(--accent);color:#fff;border:none;font-size:28px;cursor:pointer;box-shadow:0 4px 20px rgba(255,59,59,.4);z-index:150;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.fab:active{transform:scale(.9)}
+
+/* FORM */
+.form-group{margin:0 16px 16px}
+.form-label{display:block;font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;font-weight:600}
+.form-input{width:100%;padding:14px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:15px;font-family:var(--font);outline:none;transition:border .2s}
+.form-input:focus{border-color:var(--accent)}
+.form-input::placeholder{color:var(--text3)}
+select.form-input{-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23888' viewBox='0 0 16 16'%3E%3Cpath d='M8 12L2 6h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+textarea.form-input{resize:vertical;min-height:100px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 16px 16px}
+.form-row .form-group{margin:0}
+
+/* CHIPS */
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding:0 16px;margin-bottom:16px}
+.chip{padding:8px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;border:1px solid var(--border);background:var(--glass);color:var(--text2)}
+.chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* PHOTO GRID */
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:0 16px;margin-bottom:16px}
+.photo-thumb{aspect-ratio:1;border-radius:8px;object-fit:cover;background:var(--bg3);cursor:pointer;border:1px solid var(--border)}
+.photo-add{aspect-ratio:1;border-radius:8px;background:var(--bg3);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--text3);cursor:pointer;transition:all .2s}
+.photo-add:active{border-color:var(--accent);color:var(--accent)}
+
+/* LIGHTBOX */
+.lightbox{position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.95);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}
+.lightbox.open{opacity:1;pointer-events:auto}
+.lightbox img{max-width:100%;max-height:85vh;border-radius:8px;object-fit:contain}
+.lightbox-close{position:absolute;top:calc(16px + var(--safe-top));right:16px;background:rgba(255,255,255,.15);border:none;color:#fff;width:40px;height:40px;border-radius:50%;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-overlay.open{opacity:1;pointer-events:auto}
+.modal{position:fixed;bottom:0;left:0;right:0;z-index:501;background:var(--bg2);border-radius:20px 20px 0 0;max-height:92vh;overflow-y:auto;transform:translateY(100%);transition:transform .35s cubic-bezier(.32,.72,0,1);padding-bottom:calc(20px + var(--safe-bottom))}
+.modal.open{transform:translateY(0)}
+.modal-handle{width:36px;height:4px;background:var(--text3);border-radius:2px;margin:12px auto 8px}
+.modal-title{font-size:18px;font-weight:800;padding:12px 20px 16px;text-align:center}
+
+/* HEALTH BAR */
+.health-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-top:8px}
+.health-fill{height:100%;border-radius:3px;transition:width .6s ease}
+
+/* TIMELINE */
+.timeline-item{display:flex;gap:14px;padding:12px 20px}
+.timeline-dot{width:10px;height:10px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.timeline-content{flex:1}
+.timeline-content h4{font-size:14px;font-weight:600}
+.timeline-content p{font-size:12px;color:var(--text2);margin-top:2px}
+.timeline-content .time{font-size:11px;color:var(--text3);margin-top:4px}
+
+/* CHART */
+.chart-container{padding:0 16px;margin-bottom:16px}
+.chart-canvas{width:100%;height:200px;border-radius:var(--radius-sm);background:var(--card);border:1px solid var(--border)}
+
+/* EMPTY STATE */
+.empty{padding:60px 40px;text-align:center}
+.empty-icon{font-size:48px;margin-bottom:16px;opacity:.3}
+.empty h3{font-size:16px;color:var(--text2);margin-bottom:8px}
+.empty p{font-size:13px;color:var(--text3);line-height:1.5}
+
+/* ONBOARDING */
+.onboard{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;flex-direction:column;padding:var(--safe-top) 0 var(--safe-bottom)}
+.onboard-scroll{flex:1;overflow-y:auto;padding:40px 24px}
+.onboard h2{font-size:28px;font-weight:800;margin-bottom:6px}
+.onboard .sub{color:var(--text2);font-size:14px;margin-bottom:32px}
+.onboard-logo{font-size:36px;font-weight:900;letter-spacing:2px;margin-bottom:4px}
+.onboard-logo span{color:var(--accent)}
+.onboard-bottom{padding:16px 24px;background:var(--bg)}
+
+/* BADGE COLORS */
+.bg-red{background:rgba(255,59,59,.15);color:var(--accent)}
+.bg-green{background:rgba(34,197,94,.15);color:var(--green)}
+.bg-yellow{background:rgba(245,158,11,.15);color:var(--yellow)}
+.bg-blue{background:rgba(59,130,246,.15);color:var(--blue)}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.fade-up{animation:fadeUp .4s ease both}
+.fade-up-1{animation-delay:.05s}
+.fade-up-2{animation-delay:.1s}
+.fade-up-3{animation-delay:.15s}
+.fade-up-4{animation-delay:.2s}
+
+/* TOAST */
+.toast{position:fixed;top:calc(20px + var(--safe-top));left:50%;transform:translateX(-50%) translateY(-100px);background:var(--bg3);color:var(--text);padding:12px 24px;border-radius:12px;font-size:14px;font-weight:600;z-index:9999;border:1px solid var(--border);transition:transform .4s cubic-bezier(.32,.72,0,1);white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* INSTALL BANNER */
+.install-banner{margin:0 16px 12px;padding:16px;background:linear-gradient(135deg,rgba(255,59,59,.1),rgba(255,107,74,.05));border:1px solid rgba(255,59,59,.2);border-radius:var(--radius);display:flex;align-items:center;gap:14px;cursor:pointer}
+.install-banner .ib-icon{font-size:28px}
+.install-banner h3{font-size:14px;font-weight:700}
+.install-banner p{font-size:11px;color:var(--text2);margin-top:2px}
+
+/* MENU GRID */
+.menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 16px;margin-bottom:16px}
+.menu-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:18px 10px;text-align:center;cursor:pointer;transition:all .2s}
+.menu-item:active{transform:scale(.96);border-color:var(--accent)}
+.menu-item .mi-icon{font-size:26px;margin-bottom:8px}
+.menu-item .mi-label{font-size:11px;color:var(--text2);font-weight:600;letter-spacing:.5px}
+.menu-item .mi-count{font-size:18px;font-weight:800;margin-top:4px}
+
+/* DELETE BTN */
+.del-btn{background:rgba(255,59,59,.1);border:1px solid rgba(255,59,59,.2);color:var(--accent);padding:12px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;width:100%;margin:12px 16px 0;cursor:pointer;text-align:center;width:calc(100% - 32px)}
+
+/* SCROLLBAR HIDE */
+*::-webkit-scrollbar{display:none}
+*{scrollbar-width:none}
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+<div class="nav" id="nav"></div>
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="">
+</div>
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal()"></div>
+<div class="modal" id="modal"></div>
+<div class="toast" id="toast"></div>
+<input type="file" id="file-input" accept="image/*" style="display:none" multiple>
+<input type="file" id="doc-input" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" style="display:none">
+<input type="file" id="json-input" accept=".json" style="display:none">
+
+<script>
+// ═══════════════════════════════════════
+// GARAGE. — Ultimate Car OS
+// Complete PWA Application
+// ═══════════════════════════════════════
+
+// ──── GLOBALS ────
+let db=null, vehicle=null, currentPage='dashboard', pageHistory=[];
+const $=id=>document.getElementById(id);
+const CE=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h)e.innerHTML=h;return e};
+
+// ──── DATABASE ────
+const DB_NAME='GarageDB', DB_VER=3;
+const STORES=['vehicle','maintenance','services','parts','builds','fuel','diagnostics','documents','media','journal','reminders','expenses'];
+
+function openDB(){
+  return new Promise((resolve,reject)=>{
+    const req=indexedDB.open(DB_NAME,DB_VER);
+    req.onupgradeneeded=e=>{
+      const d=e.target.result;
+      STORES.forEach(s=>{if(!d.objectStoreNames.contains(s))d.createObjectStore(s,{keyPath:'id'})});
+    };
+    req.onsuccess=e=>{db=e.target.result;resolve(db)};
+    req.onerror=e=>reject(e);
+  });
+}
+function dbPut(store,data){
+  return new Promise((res,rej)=>{
+    const tx=db.transaction(store,'readwrite');
+    tx.objectStore(store).put(data);
+    tx.oncomplete=()=>res(data);
+    tx.onerror=e=>rej(e);
+  });
+}
+function dbGet(store,id){
+  return new Promise((res,rej)=>{
+    const tx=db.transaction(store,'readonly');
+    const req=tx.objectStore(store).get(id);
+    req.onsuccess=()=>res(req.result);
+    req.onerror=e=>rej(e);
+  });
+}
+function dbAll(store){
+  return new Promise((res,rej)=>{
+    const tx=db.transaction(store,'readonly');
+    const req=tx.objectStore(store).getAll();
+    req.onsuccess=()=>res(req.result||[]);
+    req.onerror=e=>rej(e);
+  });
+}
+function dbDel(store,id){
+  return new Promise((res,rej)=>{
+    const tx=db.transaction(store,'readwrite');
+    tx.objectStore(store).delete(id);
+    tx.oncomplete=()=>res();
+    tx.onerror=e=>rej(e);
+  });
+}
+function genId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+
+// ──── TOAST ────
+function toast(msg){
+  const t=$('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// ──── LIGHTBOX ────
+function openLightbox(src){$('lightbox-img').src=src;$('lightbox').classList.add('open')}
+function closeLightbox(){$('lightbox').classList.remove('open')}
+
+// ──── MODAL ────
+function openModal(html,title=''){
+  $('modal').innerHTML=`<div class="modal-handle"></div>${title?`<div class="modal-title">${title}</div>`:''}${html}`;
+  $('modal-overlay').classList.add('open');
+  $('modal').classList.add('open');
+}
+function closeModal(){
+  $('modal-overlay').classList.remove('open');
+  $('modal').classList.remove('open');
+}
+
+// ──── IMAGE HANDLING ────
+function compressImage(file,maxW=1200,quality=.8){
+  return new Promise(res=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const img=new Image();
+      img.onload=()=>{
+        const canvas=document.createElement('canvas');
+        let w=img.width,h=img.height;
+        if(w>maxW){h=h*(maxW/w);w=maxW}
+        canvas.width=w;canvas.height=h;
+        canvas.getContext('2d').drawImage(img,0,0,w,h);
+        res(canvas.toDataURL('image/jpeg',quality));
+      };
+      img.src=e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function pickImages(){
+  return new Promise(res=>{
+    const inp=$('file-input');
+    inp.onchange=async()=>{
+      const files=Array.from(inp.files);
+      const imgs=[];
+      for(const f of files){imgs.push(await compressImage(f))}
+      inp.value='';
+      res(imgs);
+    };
+    inp.click();
+  });
+}
+
+function pickDoc(){
+  return new Promise(res=>{
+    const inp=$('doc-input');
+    inp.onchange=async()=>{
+      const f=inp.files[0];if(!f){res(null);return}
+      const reader=new FileReader();
+      reader.onload=e=>res({name:f.name,type:f.type,data:e.target.result,size:f.size});
+      reader.readAsDataURL(f);
+      inp.value='';
+    };
+    inp.click();
+  });
+}
+
+// ──── NAVIGATION ────
+const PAGES={
+  dashboard:{icon:'🏠',label:'Home'},
+  maintenance:{icon:'🔧',label:'Wartung'},
+  fuel:{icon:'⛽',label:'Tanken'},
+  costs:{icon:'📊',label:'Kosten'},
+  more:{icon:'☰',label:'Mehr'}
+};
+
+function renderNav(){
+  $('nav').innerHTML=Object.entries(PAGES).map(([k,v])=>`
+    <button class="nav-item ${currentPage===k||(k==='more'&&!Object.keys(PAGES).includes(currentPage)&&currentPage!=='onboard')?'active':''}" onclick="navigate('${k}')">
+      <div class="nav-icon">${v.icon}</div>${v.label}
+    </button>`).join('');
+}
+
+function navigate(page,data=null){
+  if(page!==currentPage)pageHistory.push(currentPage);
+  currentPage=page;
+  window._pageData=data;
+  renderNav();
+  renderPage();
+  $('app').scrollTop=0;
+}
+
+function goBack(){
+  const prev=pageHistory.pop()||'dashboard';
+  currentPage=prev;
+  renderNav();
+  renderPage();
+}
+
+// ──── CATEGORIES ────
+const MAINT_CATS=['Motor','Kühlung','Kraftstoffsystem','Ansaugung','Auspuff','Getriebe','Kupplung','Differential','Fahrwerk','Lenkung','Bremsen','Räder & Reifen','Elektrik','Batterie','Beleuchtung','Innenraum','Außen','Karosserie','Rost-Reparatur','Flüssigkeiten','Sensoren','ECU / Tuning','Klimaanlage','Sicherheit'];
+const MAINT_STATUS=['geplant','in Arbeit','erledigt'];
+const DIFFICULTIES=['Einfach','Mittel','Schwer','Profi'];
+const BUILD_TYPES=['Performance','Optik','Komfort','Sound','Fahrwerk','Motor','Antrieb','Sonstiges'];
+const DOC_TYPES=['Rechnung','Zulassung','Versicherung','TÜV','Gutachten','Sonstiges'];
+
+// ──── FORMAT HELPERS ────
+const fmt=n=>(n||0).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtInt=n=>(n||0).toLocaleString('de-DE');
+const fmtDate=d=>d?new Date(d).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'}):'—';
+const daysSince=d=>d?Math.floor((Date.now()-new Date(d).getTime())/864e5):0;
+
+// ──── HEALTH SCORE ────
+async function calcHealth(){
+  const maint=await dbAll('maintenance');
+  const reminders=await dbAll('reminders');
+  const now=Date.now();
+  let score=100,issues=0;
+  reminders.forEach(r=>{
+    if(r.dueDate&&new Date(r.dueDate)<now)score-=15,issues++;
+  });
+  const overdue=maint.filter(m=>m.status==='geplant'&&m.dueDate&&new Date(m.dueDate)<now);
+  score-=overdue.length*10;
+  return{score:Math.max(0,Math.min(100,score)),issues:issues+overdue.length};
+}
+
+function healthColor(s){return s>=80?'var(--green)':s>=50?'var(--yellow)':'var(--accent)'}
+
+// ──── RENDER PAGE ────
+function renderPage(){
+  const app=$('app');
+  switch(currentPage){
+    case 'onboard':renderOnboard(app);break;
+    case 'dashboard':renderDashboard(app);break;
+    case 'maintenance':renderMaintenance(app);break;
+    case 'maint-add':renderMaintAdd(app);break;
+    case 'maint-detail':renderMaintDetail(app);break;
+    case 'fuel':renderFuel(app);break;
+    case 'fuel-add':renderFuelAdd(app);break;
+    case 'costs':renderCosts(app);break;
+    case 'more':renderMore(app);break;
+    case 'parts':renderParts(app);break;
+    case 'part-add':renderPartAdd(app);break;
+    case 'builds':renderBuilds(app);break;
+    case 'build-add':renderBuildAdd(app);break;
+    case 'build-detail':renderBuildDetail(app);break;
+    case 'diagnostics':renderDiagnostics(app);break;
+    case 'diag-add':renderDiagAdd(app);break;
+    case 'documents':renderDocuments(app);break;
+    case 'gallery':renderGallery(app);break;
+    case 'journal':renderJournal(app);break;
+    case 'journal-add':renderJournalAdd(app);break;
+    case 'reminders':renderReminders(app);break;
+    case 'reminder-add':renderReminderAdd(app);break;
+    case 'services':renderServices(app);break;
+    case 'service-add':renderServiceAdd(app);break;
+    case 'settings':renderSettings(app);break;
+    case 'edit-vehicle':renderEditVehicle(app);break;
+    default:renderDashboard(app);
+  }
+}
+
+// ═══════════════════════════════════════
+// ONBOARDING
+// ═══════════════════════════════════════
+function renderOnboard(app){
+  $('nav').style.display='none';
+  app.innerHTML=`
+  <div class="onboard">
+    <div class="onboard-scroll">
+      <div class="onboard-logo">GARAGE<span>.</span></div>
+      <div class="sub" style="margin-bottom:8px">Ultimate Car OS</div>
+      <h2 style="margin-top:24px">Willkommen!</h2>
+      <p class="sub">Richte dein Fahrzeug ein. Alle Daten bleiben auf deinem Gerät.</p>
+      
+      <div style="margin-bottom:20px">
+        <label class="form-label">Marke *</label>
+        <input class="form-input" id="ob-brand" placeholder="z.B. BMW">
+      </div>
+      <div style="margin-bottom:20px">
+        <label class="form-label">Modell *</label>
+        <input class="form-input" id="ob-model" placeholder="z.B. 328i">
+      </div>
+      <div style="margin-bottom:20px">
+        <label class="form-label">Generation / Baureihe</label>
+        <input class="form-input" id="ob-gen" placeholder="z.B. E36">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+        <div>
+          <label class="form-label">Motor</label>
+          <input class="form-input" id="ob-engine" placeholder="z.B. M52B28">
+        </div>
+        <div>
+          <label class="form-label">Getriebe</label>
+          <select class="form-input" id="ob-trans">
+            <option value="">Wählen</option>
+            <option>Schaltgetriebe</option>
+            <option>Automatik</option>
+            <option>Doppelkupplung</option>
+            <option>Sequentiell</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-bottom:20px">
+        <label class="form-label">VIN / Fahrgestellnummer</label>
+        <input class="form-input" id="ob-vin" placeholder="Optional">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+        <div>
+          <label class="form-label">Kilometerstand</label>
+          <input class="form-input" id="ob-km" type="number" placeholder="z.B. 185000">
+        </div>
+        <div>
+          <label class="form-label">Leistung (PS)</label>
+          <input class="form-input" id="ob-hp" type="number" placeholder="z.B. 193">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+        <div>
+          <label class="form-label">Kaufdatum</label>
+          <input class="form-input" id="ob-pdate" type="date">
+        </div>
+        <div>
+          <label class="form-label">Kaufpreis (€)</label>
+          <input class="form-input" id="ob-pprice" type="number" placeholder="0">
+        </div>
+      </div>
+      <div style="margin-bottom:20px">
+        <label class="form-label">Baujahr</label>
+        <input class="form-input" id="ob-year" type="number" placeholder="z.B. 1997">
+      </div>
+      <div style="margin-bottom:20px">
+        <label class="form-label">Farbe</label>
+        <input class="form-input" id="ob-color" placeholder="z.B. Bostongrün Metallic">
+      </div>
+      <div style="margin-bottom:20px">
+        <label class="form-label">Notizen</label>
+        <textarea class="form-input" id="ob-notes" rows="3" placeholder="Alles was du über dein Auto festhalten willst..."></textarea>
+      </div>
+      <div style="margin-bottom:20px">
+        <label class="form-label">Hero-Bild</label>
+        <div class="hero-placeholder" onclick="pickHeroOnboard()" id="ob-hero-area">
+          <span style="font-size:32px">📷</span>
+          Foto auswählen
+        </div>
+      </div>
+    </div>
+    <div class="onboard-bottom">
+      <button class="btn btn-primary" onclick="saveOnboard()">🚀 App starten</button>
+    </div>
+  </div>`;
+}
+
+window._obHero=null;
+async function pickHeroOnboard(){
+  const imgs=await pickImages();
+  if(imgs.length){
+    window._obHero=imgs[0];
+    $('ob-hero-area').innerHTML=`<img src="${imgs[0]}" style="width:100%;height:200px;object-fit:cover;border-radius:14px">`;
+  }
+}
+
+async function saveOnboard(){
+  const brand=$('ob-brand').value.trim();
+  const model=$('ob-model').value.trim();
+  if(!brand||!model){toast('Marke und Modell sind Pflicht!');return}
+  vehicle={
+    id:'main',brand,model,
+    generation:$('ob-gen').value.trim(),
+    engine:$('ob-engine').value.trim(),
+    transmission:$('ob-trans').value,
+    vin:$('ob-vin').value.trim(),
+    mileage:parseInt($('ob-km').value)||0,
+    horsepower:parseInt($('ob-hp').value)||0,
+    purchaseDate:$('ob-pdate').value,
+    purchasePrice:parseFloat($('ob-pprice').value)||0,
+    year:parseInt($('ob-year').value)||0,
+    color:$('ob-color').value.trim(),
+    notes:$('ob-notes').value.trim(),
+    heroImage:window._obHero||null,
+    createdAt:new Date().toISOString()
+  };
+  await dbPut('vehicle',vehicle);
+  $('nav').style.display='flex';
+  navigate('dashboard');
+  toast('Fahrzeug gespeichert! 🚗');
+}
+
+// ═══════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════
+async function renderDashboard(app){
+  if(!vehicle){app.innerHTML='<div class="empty"><div class="empty-icon">⏳</div><h3>Lädt...</h3></div>';return}
+  const maint=await dbAll('maintenance');
+  const fuel=await dbAll('fuel');
+  const builds=await dbAll('builds');
+  const parts=await dbAll('parts');
+  const reminders=await dbAll('reminders');
+  const {score}=await calcHealth();
+
+  const totalMaint=maint.reduce((s,m)=>(m.costParts||0)+(m.costLabor||0)+s,0);
+  const totalFuel=fuel.reduce((s,f)=>s+(f.totalCost||0),0);
+  const totalBuilds=builds.reduce((s,b)=>s+(b.cost||0),0);
+  const totalInvest=vehicle.purchasePrice+totalMaint+totalFuel+totalBuilds;
+
+  const km=vehicle.mileage||0;
+  const costPerKm=km>0?totalInvest/km:0;
+  const daysOwned=vehicle.purchaseDate?daysSince(vehicle.purchaseDate):0;
+  const monthlyAvg=daysOwned>30?totalInvest/(daysOwned/30):totalInvest;
+
+  const upcoming=maint.filter(m=>m.status!=='erledigt').sort((a,b)=>(a.dueDate||'z').localeCompare(b.dueDate||'z')).slice(0,3);
+  const recent=maint.filter(m=>m.status==='erledigt').sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
+
+  const overdueReminders=reminders.filter(r=>r.dueDate&&new Date(r.dueDate)<Date.now());
+
+  app.innerHTML=`
+  <div class="header">
+    <div><h1>GARAGE<span>.</span></h1><div class="header-sub">${vehicle.brand} ${vehicle.model} ${vehicle.generation||''}</div></div>
+    <div class="header-actions">
+      <button class="header-btn" onclick="navigate('settings')">⚙️</button>
+    </div>
+  </div>
+
+  ${vehicle.heroImage?
+    `<img class="hero-img fade-up" src="${vehicle.heroImage}" onclick="openLightbox('${vehicle.heroImage}')">`
+    :`<div class="hero-placeholder fade-up" onclick="changeHero()"><span style="font-size:32px">📷</span>Hero-Bild hinzufügen</div>`}
+
+  <div class="card fade-up fade-up-1">
+    <div class="card-header"><span class="card-title">Gesamtinvestition</span></div>
+    <div class="card-value card-accent">${fmt(totalInvest)} €</div>
+    <div style="font-size:12px;color:var(--text2);margin-top:4px">Kaufpreis + Wartung + Mods + Kraftstoff</div>
+  </div>
+
+  <div class="card fade-up fade-up-2">
+    <div class="card-header"><span class="card-title">Fahrzeug-Zustand</span><span style="font-size:24px;font-weight:800;color:${healthColor(score)}">${score}%</span></div>
+    <div class="health-bar"><div class="health-fill" style="width:${score}%;background:${healthColor(score)}"></div></div>
+    ${overdueReminders.length?`<div style="font-size:12px;color:var(--accent);margin-top:8px">⚠️ ${overdueReminders.length} überfällige Erinnerung(en)</div>`:''}
+  </div>
+
+  <div class="stats-row fade-up fade-up-2">
+    <div class="stat-box"><div class="stat-val">${fmtInt(km)}</div><div class="stat-label">km</div></div>
+    <div class="stat-box"><div class="stat-val">${fmt(monthlyAvg)}</div><div class="stat-label">€/Monat</div></div>
+    <div class="stat-box"><div class="stat-val">${fmt(costPerKm)}</div><div class="stat-label">€/km</div></div>
+  </div>
+
+  ${upcoming.length?`
+  <div class="sec-title fade-up fade-up-3">Anstehende Arbeiten</div>
+  ${upcoming.map(m=>`
+    <div class="list-item fade-up" onclick="navigate('maint-detail',{id:'${m.id}'})">
+      <div class="list-icon bg-yellow">🔧</div>
+      <div class="list-info"><h3>${m.title}</h3><p>${m.category} · ${m.dueDate?fmtDate(m.dueDate):'Kein Datum'}</p></div>
+      <span class="list-badge" style="background:${m.status==='geplant'?'var(--yellow)':'var(--blue)'};">${m.status}</span>
+    </div>`).join('')}`:''}
+
+  ${recent.length?`
+  <div class="sec-title fade-up fade-up-3">Letzte Aktivitäten</div>
+  ${recent.map(m=>`
+    <div class="timeline-item fade-up">
+      <div class="timeline-dot" style="background:var(--green)"></div>
+      <div class="timeline-content">
+        <h4>${m.title}</h4>
+        <p>${m.category} · ${fmt((m.costParts||0)+(m.costLabor||0))} €</p>
+        <div class="time">${fmtDate(m.date)}</div>
+      </div>
+    </div>`).join('')}`:''}
+
+  <div style="height:20px"></div>`;
+}
+
+async function changeHero(){
+  const imgs=await pickImages();
+  if(imgs.length){
+    vehicle.heroImage=imgs[0];
+    await dbPut('vehicle',vehicle);
+    renderPage();
+    toast('Hero-Bild aktualisiert!');
+  }
+}
+
+// ═══════════════════════════════════════
+// MAINTENANCE
+// ═══════════════════════════════════════
+async function renderMaintenance(app){
+  const items=await dbAll('maintenance');
+  const sorted=items.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  
+  app.innerHTML=`
+  <div class="header">
+    <div><h1>Wartung</h1><div class="header-sub">${items.length} Einträge</div></div>
+  </div>
+  
+  <div class="chips" id="maint-filter">
+    <div class="chip active" onclick="filterMaint('alle')">Alle</div>
+    <div class="chip" onclick="filterMaint('erledigt')">Erledigt</div>
+    <div class="chip" onclick="filterMaint('geplant')">Geplant</div>
+    <div class="chip" onclick="filterMaint('in Arbeit')">In Arbeit</div>
+  </div>
+
+  <div id="maint-list">
+  ${sorted.length?sorted.map(m=>`
+    <div class="list-item maint-item" data-status="${m.status}" onclick="navigate('maint-detail',{id:'${m.id}'})">
+      <div class="list-icon ${m.status==='erledigt'?'bg-green':m.status==='geplant'?'bg-yellow':'bg-blue'}">🔧</div>
+      <div class="list-info">
+        <h3>${m.title}</h3>
+        <p>${m.category} · ${fmtDate(m.date)} · ${fmtInt(m.mileage||0)} km</p>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:14px;font-weight:700">${fmt((m.costParts||0)+(m.costLabor||0))} €</div>
+        <div style="font-size:11px;color:var(--text3)">${m.status}</div>
+      </div>
+    </div>`).join(''):`
+    <div class="empty"><div class="empty-icon">🔧</div><h3>Keine Wartungseinträge</h3><p>Füge deinen ersten Eintrag hinzu!</p></div>`}
+  </div>
+  <button class="fab" onclick="navigate('maint-add')">+</button>`;
+}
+
+function filterMaint(status){
+  document.querySelectorAll('#maint-filter .chip').forEach(c=>c.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.maint-item').forEach(el=>{
+    el.style.display=(status==='alle'||el.dataset.status===status)?'flex':'none';
+  });
+}
+
+// ──── MAINT ADD ────
+function renderMaintAdd(app){
+  const edit=window._pageData?.item;
+  app.innerHTML=`
+  <div class="header">
+    <button class="header-back" style="display:block" onclick="goBack()">←</button>
+    <div><h1>${edit?'Bearbeiten':'Neue Wartung'}</h1></div>
+    <div></div>
+  </div>
+  <div style="padding-top:12px">
+    <div class="form-group">
+      <label class="form-label">Titel / Beschreibung *</label>
+      <input class="form-input" id="m-title" value="${edit?.title||''}" placeholder="z.B. Ölwechsel, Bremsbeläge vorne">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Kategorie</label>
+      <select class="form-input" id="m-cat">${MAINT_CATS.map(c=>`<option ${edit?.category===c?'selected':''}>${c}</option>`).join('')}</select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Datum</label>
+        <input class="form-input" id="m-date" type="date" value="${edit?.date||new Date().toISOString().split('T')[0]}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Kilometerstand</label>
+        <input class="form-input" id="m-km" type="number" value="${edit?.mileage||vehicle?.mileage||''}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Kosten Teile (€)</label>
+        <input class="form-input" id="m-cp" type="number" step="0.01" value="${edit?.costParts||''}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Kosten Arbeit (€)</label>
+        <input class="form-input" id="m-cl" type="number" step="0.01" value="${edit?.costLabor||''}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Zeitaufwand</label>
+        <input class="form-input" id="m-time" placeholder="z.B. 2h" value="${edit?.timeSpent||''}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Werkstatt/DIY</label>
+        <select class="form-input" id="m-shop">
+          <option ${edit?.workshop==='DIY'?'selected':''}>DIY</option>
+          <option ${edit?.workshop==='Werkstatt'?'selected':''}>Werkstatt</option>
+          <option ${edit?.workshop==='Kumpel'?'selected':''}>Kumpel</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Schwierigkeit</label>
+        <select class="form-input" id="m-diff">${DIFFICULTIES.map(d=>`<option ${edit?.difficulty===d?'selected':''}>${d}</option>`).join('')}</select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-input" id="m-status">${MAINT_STATUS.map(s=>`<option ${edit?.status===s?'selected':''}>${s}</option>`).join('')}</select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Verwendete Teile / Teilenummern</label>
+      <input class="form-input" id="m-parts" placeholder="z.B. Mann HU925/4x, 11427512300" value="${edit?.partsUsed||''}">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Marken</label>
+      <input class="form-input" id="m-brands" placeholder="z.B. Mann, Bosch, Febi" value="${edit?.brands||''}">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Nächstes fällig (Datum)</label>
+      <input class="form-input" id="m-due" type="date" value="${edit?.dueDate||''}">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Nächstes fällig (km)</label>
+      <input class="form-input" id="m-duekm" type="number" value="${edit?.dueKm||''}" placeholder="z.B. 195000">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Notizen</label>
+      <textarea class="form-input" id="m-notes" rows="3" placeholder="Zusätzliche Infos...">${edit?.notes||''}</textarea>
+    </div>
+    
+    <div class="sec-title">Fotos</div>
+    <div class="photo-grid" id="m-photos">
+      ${(edit?.photos||[]).map((p,i)=>`<img class="photo-thumb" src="${p}" onclick="openLightbox('${p}')">`).join('')}
+      <div class="photo-add" onclick="addMaintPhotos()">+</div>
+    </div>
+    
+    <div style="padding:0 16px 16px">
+      <button class="btn btn-primary" onclick="saveMaint('${edit?.id||''}')">${edit?'Speichern':'Hinzufügen'}</button>
+    </div>
+    ${edit?`<button class="del-btn" onclick="deleteMaint('${edit.id}')">🗑 Eintrag löschen</button>`:''}
+    <div style="height:20px"></div>
+  </div>`;
+  window._maintPhotos=edit?.photos?[...edit.photos]:[];
+}
+
+async function addMaintPhotos(){
+  const imgs=await pickImages();
+  window._maintPhotos.push(...imgs);
+  const grid=$('m-photos');
+  grid.innerHTML=window._maintPhotos.map(p=>`<img class="photo-thumb" src="${p}" onclick="openLightbox('${p}')">`).join('')+`<div class="photo-add" onclick="addMaintPhotos()">+</div>`;
+}
+
+async function saveMaint(editId){
+  const title=$('m-title').value.trim();
+  if(!title){toast('Titel ist Pflicht!');return}
+  const item={
+    id:editId||genId(),
+    title,
+    category:$('m-cat').value,
+    date:$('m-date').value,
+    mileage:parseInt($('m-km').value)||0,
+    costParts:parseFloat($('m-cp').value)||0,
+    costLabor:parseFloat($('m-cl').value)||0,
+    timeSpent:$('m-time').value,
+    workshop:$('m-shop').value,
+    difficulty:$('m-diff').value,
+    status:$('m-status').value,
+    partsUsed:$('m-parts').value,
+    brands:$('m-brands').value,
+    dueDate:$('m-due').value,
+    dueKm:parseInt($('m-duekm').value)||0,
+    notes:$('m-notes').value,
+    photos:window._maintPhotos||[],
+    updatedAt:new Date().toISOString()
+  };
+  if(!editId)item.createdAt=new Date().toISOString();
+  // Update vehicle mileage
+  if(item.mileage>vehicle.mileage){vehicle.mileage=item.mileage;await dbPut('vehicle',vehicle)}
+  await dbPut('maintenance',item);
+  // Save photos to media
+  for(const p of item.photos){
+    await dbPut('media',{id:genId(),src:p,category:'maintenance',refId:item.id,refTitle:item.title,createdAt:new Date().toISOString()});
+  }
+  toast(editId?'Aktualisiert! ✅':'Gespeichert! ✅');
+  goBack();
+}
+
+async function deleteMaint(id){
+  if(!confirm('Eintrag wirklich löschen?'))return;
+  await dbDel('maintenance',id);toast('Gelöscht');navigate('maintenance');
+}
+
+// ──── MAINT DETAIL ────
+async function renderMaintDetail(app){
+  const id=window._pageData?.id;
+  const item=await dbGet('maintenance',id);
+  if(!item){app.innerHTML='<div class="empty"><h3>Nicht gefunden</h3></div>';return}
+  const totalCost=(item.costParts||0)+(item.costLabor||0);
+  app.innerHTML=`
+  <div class="header">
+    <button class="header-back" style="display:block" onclick="goBack()">←</button>
+    <div><h1>${item.title}</h1><div class="header-sub">${item.category}</div></div>
+    <button class="header-btn" onclick="navigate('maint-add',{item:${JSON.stringify(item).replace(/'/g,"\\'")}})">✏️</button>
+  </div>
+  
+  <div class="card fade-up" style="margin-top:12px">
+    <div class="card-header"><span class="card-title">Kosten</span><span class="card-value" style="font-size:22px">${fmt(totalCost)} €</span></div>
+    <div style="display:flex;gap:20px;font-size:13px;color:var(--text2)">
+      <span>Teile: ${fmt(item.costParts||0)} €</span>
+      <span>Arbeit: ${fmt(item.costLabor||0)} €</span>
+    </div>
+  </div>
+
+  <div class="card fade-up fade-up-1">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px">
+      <div><span style="color:var(--text3)">Datum</span><div style="font-weight:600;margin-top:2px">${fmtDate(item.date)}</div></div>
+      <div><span style="color:var(--text3)">Kilometerstand</span><div style="font-weight:600;margin-top:2px">${fmtInt(item.mileage)} km</div></div>
+      <div><span style="color:var(--text3)">Status</span><div style="font-weight:600;margin-top:2px">${item.status}</div></div>
+      <div><span style="color:var(--text3)">Schwierigkeit</span><div style="font-weight:600;margin-top:2px">${item.difficulty}</div></div>
+      <div><span style="color:var(--text3)">Werkstatt/DIY</span><div style="font-weight:600;margin-top:2px">${item.workshop}</div></div>
+      <div><span style="color:var(--text3)">Zeitaufwand</span><div style="font-weight:600;margin-top:2px">${item.timeSpent||'—'}</div></div>
+    </div>
+  </div>
+
+  ${item.partsUsed?`<div class="card fade-up fade-up-2"><div class="card-title" style="margin-bottom:8px">Teile & Nummern</div><div style="font-size:14px;line-height:1.5">${item.partsUsed}</div>${item.brands?`<div style="font-size:12px;color:var(--text2);margin-top:4px">Marken: ${item.brands}</div>`:''}</div>`:''}
+
+  ${item.dueDate||item.dueKm?`<div class="card fade-up fade-up-2"><div class="card-title" style="margin-bottom:8px">Nächstes Fällig</div><div style="font-size:14px">${item.dueDate?fmtDate(item.dueDate):''} ${item.dueKm?`bei ${fmtInt(item.dueKm)} km`:''}</div></div>`:''}
+
+  ${item.notes?`<div class="card fade-up fade-up-3"><div class="card-title" style="margin-bottom:8px">Notizen</div><div style="font-size:14px;line-height:1.6;color:var(--text2)">${item.notes}</div></div>`:''}
+
+  ${item.photos?.length?`
+  <div class="sec-title fade-up fade-up-3">Fotos (${item.photos.length})</div>
+  <div class="photo-grid fade-up fade-up-4">${item.photos.map(p=>`<img class="photo-thumb" src="${p}" onclick="openLightbox('${p}')">`).join('')}</div>`:''}
+  <div style="height:20px"></div>`;
+}
+
+// ═══════════════════════════════════════
+// FUEL LOG
+// ═══════════════════════════════════════
+async function renderFuel(app){
+  const items=(await dbAll('fuel')).sort((a,b)=>b.date.localeCompare(a.date));
+  const totalL=items.reduce((s,f)=>s+(f.liters||0),0);
+  const totalC=items.reduce((s,f)=>s+(f.totalCost||0),0);
+  const avgConsumption=items.length>=2?calcAvgConsumption(items):0;
+
+  app.innerHTML=`
+  <div class="header"><div><h1>Tankbuch</h1><div class="header-sub">${items.length} Einträge</div></div></div>
+  
+  <div class="stats-row fade-up">
+    <div class="stat-box"><div class="stat-val">${fmt(totalC)}</div><div class="stat-label">€ gesamt</div></div>
+    <div class="stat-box"><div class="stat-val">${fmt(totalL)}</div><div class="stat-label">Liter</div></div>
+    <div class="stat-box"><div class="stat-val">${fmt(avgConsumption)}</div><div class="stat-label">L/100km</div></div>
+  </div>
+
+  ${items.length?items.map(f=>`
+    <div class="list-item" onclick="editFuel('${f.id}')">
+      <div class="list-icon bg-green">⛽</div>
+      <div class="list-info">
+        <h3>${fmt(f.liters)} L · ${fmt(f.pricePerLiter)} €/L</h3>
+        <p>${fmtDate(f.date)} · ${fmtInt(f.mileage)} km ${f.consumption?`· ${fmt(f.consumption)} L/100km`:''}</p>
+      </div>
+      <div style="font-weight:700">${fmt(f.totalCost)} €</div>
+    </div>`).join(''):`
+    <div class="empty"><div class="empty-icon">⛽</div><h3>Noch keine Tankeinträge</h3><p>Logge deinen ersten Tankstop!</p></div>`}
+  <button class="fab" onclick="navigate('fuel-add')">+</button>`;
+}
+
+function calcAvgConsumption(items){
+  const sorted=[...items].sort((a,b)=>a.mileage-b.mileage);
+  let totalL=0,totalKm=0;
+  for(let i=1;i<sorted.length;i++){
+    const km=sorted[i].mileage-sorted[i-1].mileage;
+    if(km>0){totalL+=sorted[i].liters;totalKm+=km}
+  }
+  return totalKm>0?(totalL/totalKm)*100:0;
+}
+
+function renderFuelAdd(app){
+  const edit=window._pageData?.item;
+  app.innerHTML=`
+  <div class="header">
+    <button class="header-back" style="display:block" onclick="goBack()">←</button>
+    <div><h1>${edit?'Tanken bearbeiten':'Neuer Tankeintrag'}</h1></div><div></div>
+  </div>
+  <div style="padding-top:12px">
+    <div class="form-group"><label class="form-label">Datum</label><input class="form-input" id="f-date" type="date" value="${edit?.date||new Date().toISOString().split('T')[0]}"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Liter</label><input class="form-input" id="f-liters" type="number" step="0.01" value="${edit?.liters||''}" placeholder="z.B. 45.2"></div>
+      <div class="form-group"><label class="form-label">Preis/Liter (€)</label><input class="form-input" id="f-ppl" type="number" step="0.001" value="${edit?.pricePerLiter||''}" placeholder="z.B. 1.789"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Gesamtpreis (€)</label><input class="form-input" id="f-total" type="number" step="0.01" value="${edit?.totalCost||''}" placeholder="Auto-berechnet" oninput=""></div>
+      <div class="form-group"><label class="form-label">Kilometerstand</label><input class="form-input" id="f-km" type="number" value="${edit?.mileage||vehicle?.mileage||''}"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Tankstelle / Notiz</label><input class="form-input" id="f-note" value="${edit?.note||''}" placeholder="Optional"></div>
+    <div style="padding:0 16px 16px"><button class="btn btn-primary" onclick="saveFuel('${edit?.id||''}')">${edit?'Speichern':'Hinzufügen'}</button></div>
+    ${edit?`<button class="del-btn" onclick="delFuel('${edit.id}')">🗑 Löschen</button>`:''}
+  </div>`;
+}
+
+async function editFuel(id){
+  const item=await dbGet('fuel',id);
+  navigate('fuel-add',{item});
+}
+
+async function saveFuel(editId){
+  const liters=parseFloat($('f-liters').value)||0;
+  const ppl=parseFloat($('f-ppl').value)||0;
+  let total=parseFloat($('f-total').value)||0;
+  if(!total&&liters&&ppl)total=liters*ppl;
+  const mileage=parseInt($('f-km').value)||0;
+
+  // Calculate consumption
+  const allFuel=(await dbAll('fuel')).filter(f=>f.id!==editId).sort((a,b)=>b.mileage-a.mileage);
+  let consumption=0;
+  if(allFuel.length>0){
+    const prev=allFuel.find(f=>f.mileage<mileage);
+    if(prev){const diff=mileage-prev.mileage;if(diff>0)consumption=(liters/diff)*100}
+  }
+
+  const item={id:editId||genId(),date:$('f-date').value,liters,pricePerLiter:ppl,totalCost:total,mileage,consumption,note:$('f-note').value,updatedAt:new Date().toISOString()};
+  if(!editId)item.createdAt=new Date().toISOString();
+  if(mileage>vehicle.mileage){vehicle.mileage=mileage;await dbPut('vehicle',vehicle)}
+  await dbPut('fuel',item);toast('Gespeichert! ⛽');goBack();
+}
+
+async function delFuel(id){if(confirm('Löschen?')){await dbDel('fuel',id);toast('Gelöscht');navigate('fuel')}}
+
+// ═══════════════════════════════════════
+// COST ANALYTICS
+// ═══════════════════════════════════════
+async function renderCosts(app){
+  const maint=await dbAll('maintenance');
+  const fuel=await dbAll('fuel');
+  const builds=await dbAll('builds');
+
+  const totalMaint=maint.reduce((s,m)=>(m.costParts||0)+(m.costLabor||0)+s,0);
+  const totalFuel=fuel.reduce((s,f)=>s+(f.totalCost||0),0);
+  const totalBuilds=builds.reduce((s,b)=>s+(b.cost||0),0);
+  const totalAll=vehicle.purchasePrice+totalMaint+totalFuel+totalBuilds;
+
+  const categories=[
+    {name:'Kaufpreis',val:vehicle.purchasePrice,color:'var(--blue)'},
+    {name:'Wartung',val:totalMaint,color:'var(--accent)'},
+    {name:'Kraftstoff',val:totalFuel,color:'var(--green)'},
+    {name:'Modifikationen',val:totalBuilds,color:'var(--yellow)'}
+  ];
+
+  app.innerHTML=`
+  <div class="header"><div><h1>Kostenanalyse</h1><div class="header-sub">Gesamtübersicht</div></div></div>
+
+  <div class="card fade-up" style="margin-top:12px;text-align:center">
+    <div class="card-title">Gesamtkosten</div>
+    <div style="font-size:36px;font-weight:900;color:var(--accent);margin:8px 0">${fmt(totalAll)} €</div>
+    <div style="font-size:12px;color:var(--text3)">${vehicle.mileage?`${fmt(totalAll/vehicle.mileage)} €/km`:''}</div>
+  </div>
+
+  <div style="padding:0 16px 16px" class="fade-up fade-up-1">
+    ${categories.map(c=>{
+      const pct=totalAll>0?(c.val/totalAll*100):0;
+      return `<div style="margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+          <span style="font-size:13px;font-weight:600">${c.name}</span>
+          <span style="font-size:13px;font-weight:700">${fmt(c.val)} € <span style="color:var(--text3)">(${pct.toFixed(0)}%)</span></span>
+        </div>
+        <div style="height:8px;background:var(--bg3);border-radius:4px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:${c.color};border-radius:4px;transition:width .6s ease"></div>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>
+
+  <div class="sec-title fade-up fade-up-2">Monatliche Ausgaben</div>
+  <div class="card fade-up fade-up-3" id="monthly-chart" style="min-height:200px;display:flex;align-items:flex-end;gap:4px;padding-bottom:30px;position:relative">
+    ${renderMonthlyBars(maint,fuel,builds)}
+  </div>
+  <div style="height:20px"></div>`;
+}
+
+function renderMonthlyBars(maint,fuel,builds){
+  const months={};
+  const addToMonth=(date,amount)=>{
+    if(!date)return;
+    const key=date.substring(0,7);
+    months[key]=(months[key]||0)+amount;
+  };
+  maint.forEach(m=>addToMonth(m.date,(m.costParts||0)+(m.costLabor||0)));
+  fuel.forEach(f=>addToMonth(f.date,f.totalCost||0));
+  builds.forEach(b=>addToMonth(b.date,b.cost||0));
+  
+  const sorted=Object.entries(months).sort((a,b)=>a[0].localeCompare(b[0])).slice(-8);
+  if(!sorted.length)return '<div style="padding:20px;text-align:center;color:var(--text3);width:100%">Noch keine Daten</div>';
+  const max=Math.max(...sorted.map(s=>s[1]));
+  
+  return sorted.map(([k,v])=>{
+    const h=max>0?(v/max*140):0;
+    const label=k.split('-')[1]+'/'+k.split('-')[0].slice(2);
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+      <div style="font-size:10px;font-weight:600">${v>0?Math.round(v):''}</div>
+      <div style="width:100%;height:${h}px;background:var(--accent);border-radius:4px 4px 0 0;min-height:2px;transition:height .6s ease"></div>
+      <div style="font-size:9px;color:var(--text3);position:absolute;bottom:8px">${label}</div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════
+// MORE MENU
+// ═══════════════════════════════════════
+async function renderMore(app){
+  const parts=await dbAll('parts');
+  const builds=await dbAll('builds');
+  const diag=await dbAll('diagnostics');
+  const docs=await dbAll('documents');
+  const media=await dbAll('media');
+  const journal=await dbAll('journal');
+  const reminders=await dbAll('reminders');
+  const services=await dbAll('services');
+
+  app.innerHTML=`
+  <div class="header"><div><h1>Mehr</h1><div class="header-sub">Alle Module</div></div></div>
+
+  <div class="menu-grid fade-up" style="margin-top:12px">
+    <div class="menu-item" onclick="navigate('parts')"><div class="mi-icon">🔩</div><div class="mi-label">Teile</div><div class="mi-count">${parts.length}</div></div>
+    <div class="menu-item" onclick="navigate('builds')"><div class="mi-icon">🏗️</div><div class="mi-label">Builds</div><div class="mi-count">${builds.length}</div></div>
+    <div class="menu-item" onclick="navigate('diagnostics')"><div class="mi-icon">🔍</div><div class="mi-label">Diagnose</div><div class="mi-count">${diag.length}</div></div>
+    <div class="menu-item" onclick="navigate('documents')"><div class="mi-icon">📄</div><div class="mi-label">Dokumente</div><div class="mi-count">${docs.length}</div></div>
+    <div class="menu-item" onclick="navigate('gallery')"><div class="mi-icon">🖼️</div><div class="mi-label">Galerie</div><div class="mi-count">${media.length}</div></div>
+    <div class="menu-item" onclick="navigate('journal')"><div class="mi-icon">📝</div><div class="mi-label">Journal</div><div class="mi-count">${journal.length}</div></div>
+    <div class="menu-item" onclick="navigate('reminders')"><div class="mi-icon">🔔</div><div class="mi-label">Erinnerungen</div><div class="mi-count">${reminders.length}</div></div>
+    <div class="menu-item" onclick="navigate('services')"><div class="mi-icon">📋</div><div class="mi-label">Service-Plan</div><div class="mi-count">${services.length}</div></div>
+    <div class="menu-item" onclick="navigate('settings')"><div class="mi-icon">⚙️</div><div class="mi-label">Einstellungen</div><div class="mi-count"></div></div>
+  </div>
+
+  <div class="sec-title">Fahrzeuginfo</div>
+  <div class="card fade-up fade-up-1" onclick="navigate('edit-vehicle')" style="cursor:pointer">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px">
+      <div><span style="color:var(--text3)">Marke</span><div style="font-weight:600">${vehicle.brand}</div></div>
+      <div><span style="color:var(--text3)">Modell</span><div style="font-weight:600">${vehicle.model} ${vehicle.generation||''}</div></div>
+      <div><span style="color:var(--text3)">Motor</span><div style="font-weight:600">${vehicle.engine||'—'}</div></div>
+      <div><span style="color:var(--text3)">Getriebe</span><div style="font-weight:600">${vehicle.transmission||'—'}</div></div>
+      <div><span style="color:var(--text3)">Baujahr</span><div style="font-weight:600">${vehicle.year||'—'}</div></div>
+      <div><span style="color:var(--text3)">Leistung</span><div style="font-weight:600">${vehicle.horsepower?vehicle.horsepower+' PS':'—'}</div></div>
+      <div><span style="color:var(--text3)">Kilometerstand</span><div style="font-weight:600">${fmtInt(vehicle.mileage)} km</div></div>
+      <div><span style="color:var(--text3)">Farbe</span><div style="font-weight:600">${vehicle.color||'—'}</div></div>
+    </div>
+    <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--accent)">Tippen zum Bearbeiten →</div>
+  </div>
+  <div style="height:20px"></div>`;
+}
+
+// ═══════════════════════════════════════
+// PARTS & INVENTORY
+// ═══════════════════════════════════════
+async function renderParts(app){
+  const items=(await dbAll('parts')).sort((a,b)=>(b.installDate||'').localeCompare(a.installDate||''));
+  app.innerHTML=`
+  <div class="header"><button class="header-back" style="display:block" onclick="goBack()">←</button><div><h1>Teile & Inventar</h1><div class="header-sub">${items.length} Teile</div></div><div></div></div>
+  <div class="chips"><div class="chip active" onclick="filterParts('alle')">Alle</div><div class="chip" onclick="filterParts('verbaut')">Verbaut</div><div class="chip" onclick="filterParts('lager')">Auf Lager</div></div>
+  <div id="parts-list">
+  ${items.length?items.map(p=>`
+    <div class="list-item parts-item" data-status="${p.installed?'verbaut':'lager'}" onclick="editPart('${p.id}')">
+      <div class="list-icon ${p.installed?'bg-green':'bg-blue'}">🔩</div>
+      <div class="list-info"><h3>${p.name}</h3><p>${p.brand||''} ${p.partNumber?'· '+p.partNumber:''} ${p.installDate?'· Verbaut '+fmtDate(p.installDate):''}</p></div>
+      <div style="font-weight:700">${fmt(p.price||0)} €</div>
+    </div>`).join(''):'<div class="empty"><div class="empty-icon">🔩</div><h3>Keine Teile</h3><p>Füge Teile hinzu!</p></div>'}
+  </div>
+  <button class="fab" onclick="navigate('part-add')">+</button>`;
+}
+
+function filterParts(f){
+  document.querySelectorAll('.chips .chip').forEach(c=>c.classList.remove('active'));event.target.classList.add('active');
+  document.querySelectorAll('.parts-item').forEach(el=>{el.style.display=(f==='alle'||el.dataset.status===f)?'flex':'none'});
+}
+
+function renderPartAdd(app){
+  const edit=window._pageData?.item;
+  app.innerHTML=`
+  <div class="header"><button class="header-back" style="display:block" onclick="goBack()">←</button><div><h1>${edit?'Teil bearbeiten':'Neues Teil'}</h1></div><div></div></div>
+  <div style="padding-top:12px">
+    <div class="form-group"><label class="form-label">Name *</label><input class="form-input" id="p-name" value="${edit?.name||''}" placeholder="z.B. Ölfilter"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Marke</label><input class="form-input" id="p-brand" value="${edit?.brand||''}" placeholder="z.B. Mann"></div>
+      <div class="form-group"><label class="form-label">Teilenummer</label><input class="form-input" id="p-num" value="${edit?.partNumber||''}" placeholder="z.B. HU925/4x"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Preis (€)</label><input class="form-input" id="p-price" type="number" step="0.01" value="${edit?.price||''}"></div>
+      <div class="form-group"><label class="form-label">Lebensdauer (km)</label><input class="form-input" id="p-life" type="number" value="${edit?.lifespan||''}"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Einbaudatum</label><input class="form-input" id="p-idate" type="date" value="${edit?.installDate||''}"></div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-input" id="p-inst"><option value="1" ${edit?.installed!==false?'selected':''}>Verbaut</option><option value="0" ${edit?.installed===false?'selected':''}>Auf Lager</option></select>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Notizen</label><textarea class="form-input" id="p-notes" rows="2">${edit?.notes||''}</textarea></div>
+    <div style="padding:0 16px 16px"><button class="btn btn-primary" onclick="savePart('${edit?.id||''}')">${edit?'Speichern':'Hinzufügen'}</button></div>
+    ${edit?`<button class="del-btn" onclick="delPart('${edit.id}')">🗑 Löschen</button>`:''}
+  </div>`;
+}
+
+async function editPart(id){const item=await dbGet('parts',id);navigate('part-add',{item})}
+async function savePart(eid){
+  const name=$('p-name').value.trim();if(!name){toast('Name ist Pflicht!');return}
+  const item={id:eid||genId(),name,brand:$('p-brand').value,partNumber:$('p-num').value,price:parseFloat($('p-price').value)||0,lifespan:parseInt($('p-life').value)||0,installDate:$('p-idate').value,installed:$('p-inst').value==='1',notes:$('p-notes').value,updatedAt:new Date().toISOString()};
+  if(!eid)item.createdAt=new Date().toISOString();
+  await dbPut('parts',item);toast('Gespeichert! ✅');goBack();
+}
+async function delPart(id){if(confirm('Löschen?')){await dbDel('parts',id);toast('Gelöscht');navigate('parts')}}
+
+// ═══════════════════════════════════════
+// BUILDS / MODIFICATIONS
+// ═══════════════════════════════════════
+async function renderBuilds(app){
+  const items=(await dbAll('builds')).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  const total=items.reduce((s,b)=>s+(b.cost||0),0);
+  app.innerHTML=`
+  <div class="header"><button class="header-back" style="display:block" onclick="goBack()">←</button><div><h1>Builds & Mods</h1><div class="header-sub">${fmt(total)} € investiert</div></div><div></div></div>
+  ${items.length?items.map(b=>`
+    <div class="list-item" onclick="navigate('build-detail',{id:'${b.id}'})">
+      <div class="list-icon bg-yellow">🏗️</div>
+      <div class="list-info"><h3>${b.title}</h3><p>${b.type} · ${fmtDate(b.date)}</p></div>
+      <div style="text-align:right"><div style="font-weight:700">${fmt(b.cost||0)} €</div></div>
+    </div>`).join(''):'<div class="empty"><div class="empty-icon">🏗️</div><h3>Keine Builds</h3><p>Dokumentiere deine Modifikationen!</p></div>'}
+  <button class="fab" onclick="navigate('build-add')">+</button>`;
+}
+
+function renderBuildAdd(app){
+  const edit=window._pageData?.item;
+  app.innerHTML=`
+  <div class="header"><button class="header-back" style="display:block" onclick="goBack()">←</button><div><h1>${edit?'Build bearbeiten':'Neuer Build'}</h1></div><div></div></div>
+  <div style="padding-top:12px">
+    <div class="form-group"><label class="form-label">Titel *</label><input class="form-input" id="b-title" value="${edit?.title||''}" placeholder="z.B. Sportauspuff Einbau"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Typ</label><select class="form-input" id="b-type">${BUILD_TYPES.map(t=>`<option ${edit?.type===t?'selected':''}>${t}</option>`).join('')}</select></div>
+      <div class="form-group"><label class="form-label">Datum</label><input class="form-input" id="b-date" type="date" value="${edit?.date||new Date().toISOString().split('T')[0]}"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Kosten (€)</label><input class="form-input" id="b-cost" type="number" step="0.01" value="${edit?.cost||''}"></div>
+      <div class="form-group"><label class="form-label">Kilometerstand</label><input class="form-input" id="b-km" type="number" value="${edit?.mileage||vehicle?.mileage||''}"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Beschreibung</label><textarea class="form-input" id="b-desc" rows="4">${edit?.description||''}</textarea></div>
+    <div class="sec-title">Fotos (Vorher/Nachher)</div>
+    <div class="photo-grid" id="b-photos">${(edit?.photos||[]).map(p=>`<img class="photo-thumb" src="${p}" onclick="openLightbox('${p}')">`).join('')}<div class="photo-add" onclick="addBuildPhotos()">+</div></div>
+    <div style="padding:0 16px 16px"><button class="btn btn-primary" onclick="saveBuild('${edit?.id||''}')">${edit?'Speichern':'Hinzufügen'}</button></div>
+    ${edit?`<button class="del-btn" onclick="delBuild('${edit.id}')">🗑 Löschen</button>`:''}
+  </div>`;
+  window._buildPhotos=edit?.photos?[...edit.photos]:[];
+}
+
+async function addBuildPhotos(){
+  const imgs=await pickImages();window._buildPhotos.push(...imgs);
+  $('b-photos').innerHTML=window._buildPhotos.map(p=>`<img class="photo-thumb" src="${p}" onclick="openLightbox('${p}')">`).join('')+`<div class="photo-add" onclick="addBuildPhotos()">+</div>`;
+}
+
+async function saveBuild(eid){
+  const title=$('b-title').value.trim();if(!title){toast('Titel ist Pflicht!');return}
+  const item={id:eid||genId(),title,type:$('b-type').value,date:$('b-date').value,cost:parseFloat($('b-cost').value)||0,mileage:parseInt($('b-km').value)||0,description:$('b-desc').value,photos:window._buildPhotos||[],updatedAt:new Date().toISOString()};
+  if(!eid)item.createdAt=new Date().toISOString();
+  await dbPut('builds',item);
+  for(const p of item.photos){await dbPut('media',{id:genId(),src:p,category:'builds',refId:item.id,refTitle:item.title,createdAt:new Date().toISOString()})}
+  toast('Gespeichert! ✅');goBack();
+}
+async function delBuild(id){if(confirm('Löschen?')){await dbDel('builds',id);toast('Gelöscht');navigate('builds')}}
+
+async function renderBuildDetail(app){
+  const id=window._pageData?.id;const item=await dbGet('builds',id);
+  if(!item){app.innerHTML='<div class="empty"><h3>Nicht gefunden</h3></div>';return}
+  app.innerHTML=`
+  <div class="header"><button class="header-back" style="display:block" onclick="goBack()">←</button><div><h1>${item.title}</h1><div class="header-sub">${item.type}</div></div>
+    <button class="header-btn" onclick="navigate('build-add',{item:${JSON.stringify(item).replace(/'/g,"\\'")}})">✏️</button></div>
+  <div class="card fade-up" style="margin-top:12px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px">
+      <div><span style="color:var(--text3)">Kosten</span><div style="font-weight:700;font-size:20px;color:var(--accent)">${fmt(item.cost)} €</div></div>
+      <div><span style="color:var(--text3)">Datum</span><div style="font-weight:600">${fmtDate(item.date)}</div></div>
+    </div>
+  </div>
+  ${item.description?`<div class="card fade-up fade-up-1"><div class="card-title" style="margin-bottom:8px">Beschreibung</div><div style="font-size:14px;line-height:1.6;color:var(--text2)">${item.description}</div></div>`:''}
+  ${item.photos?.length?`<div class="sec-title">Fotos</div><div class="photo-grid">${item.photos.map(p=>`<img class="photo-thumb" src="${p}" onclick="openLightbox('${p}')">`).join('')}</div>`:''}`;
+}
+
+// ═══════════════════════════════════════
+// DIAGNOSTICS
+// ═══════════════════════════════════════
+async function renderDiagnostics(app){
+  const items=(await dbAll('diagnostics')).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  app.innerHTML=`
+  <div class="header"><button class="header-back" style="display:block" onclick="goBack()">←</button><div><h1>Diagnose</h1><div class="header-sub">${items.length} Einträge</div></div><div></div></div>
+  ${items.length?items.map(d=>`
+    <div class="list-item" onclick="editDiag('${d.id}')">
+      <div class="list-icon ${d.fixed?'bg-green':'bg-red'}">🔍</div>
+      <div class="list-info"><h3>${d.symptom}</h3><p>${d.suspectedCause||'Ursache unbekannt'} · ${fmtDate(d.date)}</p></div>
+      <span class="list-badge" style="background:${d.fixed?'var(--green)':'var(--accent)'}">${d.fixed?'Behoben':'Offen'}</span>
+    </div>`).join(''):'<div class="empty"><div class="empty-icon">🔍</div><h3>Keine Diagnosen</h3><p>Dokumentiere Probleme & Symptome</p></div>'}
+  <button class="fab" onclick="navigate('diag-add')">+</button>`;
+}
+
+function renderDiagAdd(app){
+  const edit=window._pageData?.item;
+  app.innerHTML=`
+  <div class="header"><button class="header-back" style="display:block" onclick="goBack()">←</button><div><h1>${edit?'Bearbeiten':'Neue Diagnose'}</h1></div><div></div></div>
+  <div style="padding-top:12px">
+    <div class="form-group"><label class="form-label">Symptom *</label><input class="form-input" id="d-sym" value="${edit?.symptom||''}" placeholder="z.B. Schlagen beim Lenken"></div>
+    <div class="form-group"><label class="form-label">Vermutete Ursache</label><input class="form-input" id="d-cause" value="${edit?.suspectedCause||''}" placeholder="z.B. Spurstangenkopf"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Datum</label><input class="form-input" id="d-date" type="date" value="${edit?.date||new Date().toISOString().split('T')[0]}"></div>
+      <div class="form-group"><label class="form-label">Status</label><select class="form-input" id="d-fixed"><option value="0" ${!edit?.fixed?'selected':''}>Offen</option><option value="1" ${edit?.fixed?'selected':''}>Behoben</option></select></div>
+    </div>
+    <div class="form-group"><label class="form-label">Notizen</label><textarea class="form-input" id="d-notes" rows="3">${edit?.notes||''}</textarea></div>
+    <div style="padding:0 16px 16px"><button class="btn btn-primary" onclick="saveDiag('${edit?.id||''}')">${edit?'Speichern':'Hinzufügen'}</button></div>
+    ${edit?`<button class="del-btn" onclick="delDiag('${edit.id}')">🗑 Löschen</button>`:''}
+  </div>`;
+}
+async function editDiag(id){const item=await dbGet('diagnostics',id);navigate('diag-add',{item})}
+async function saveDiag(eid){
+  const symptom=$('d-sym').value.trim();if(!symptom){toast('Symptom ist Pflicht!');return}
+  const item={id:eid||genId(),symptom,suspectedCause:$('d-cause').value,date:$('d-date').value,fixed:$('d-fixed').value==='1',notes:$('d-notes').value,updatedAt:new Date().toISOString()};
+  if(!eid)item.createdAt=new Date().toISOString();
+  await dbPut('diagnostics',item);toast('Gespeichert! ✅');goBack();
+}
+async function delDiag(id){if(confirm('Löschen?')){await dbDel('diagnostics',id);toast('Gelöscht');navigate('diagnostics')}}
+
+// ═══════════════════════════════════════
+// DOCUMENTS
+// ═══════════════════════════════════════
+async function renderDocuments(app){
+  const items=(await dbAll('documents')).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  app.innerHTML=`
+  <div class="header"><button class="header-back" style="display:block" onclick="goBack()">←</button><div><h1>Dokumente</h1><div class="header-sub">${items.length} Dateien</div></div><div></div></div>
+  ${items.length?items.map(d=>`
+    <div class="list-item" onclick="viewDoc('${d.id}')">
+      <div class="list-icon bg-blue">📄</div>
+      <div class="list-info"><h3>${d.name}</h3><p>${d.docType} · ${fmtDate(d.date)}</p></div>
+      <div class="list-arrow">→</div>
+    </div>`).join(''):'<div class="empty"><div class="empty-icon">📄</div><h3>Keine Dokumente</h3><p>Lade Rechnungen, Zulassungen etc. hoch</p></div>'}
+  <button class="fab" onclick="addDocument()">+</button>`;
+}
+
+async function addDocument(){
+  openModal(`
+    <div style="padding:0 20px 20px">
+      <div class="form-group" style="margin:0 0 16px"><label class="form-label">Name</label><input class="form-input" id="doc-name" placeholder="z.B. TÜV-Bericht 2024"></div>
+      <div class="form-row" style="margin:0 0 16px;padding:0">
+        <div class="form-group" style="margin:0"><label class="form-label">Typ</label><select class="form-input" id="doc-type">${DOC_TYPES.map(t=>`<option>${t}</option>`).join('')}</select></div>
+        <div class="form-group" style="margin:0"><label class="form-label">Datum</label><input class="form-input" id="doc-date" type="date" value="${new Date().toISOString().split('T')[0]}"></div>
+      </div>
+      <button class="btn btn-primary" onclick="pickAndSaveDoc()">📎 Datei auswählen & speichern</button>
+    </div>`,'Dokument hinzufügen');
+}
+
+async function pickAndSaveDoc(){
+  const file=await pickDoc();if(!file)return;
+  const name=$('doc-name').value.trim()||file.name;
+  const item={id:genId(),name,fileName:file.name,docType:$('doc-type').value,date:$('doc-date').value,fileData:file.data,fileType:file.type,createdAt:new Date().toISOString()};
+  await dbPut('documents',item);closeModal();toast('Dokument gespeichert! 📄');navigate('documents');
+}
+
+async function viewDoc(id){
+  const doc=await dbGet('documents',id);if(!doc)return;
+  if(doc.fileData){
+    if(doc.fileType?.includes('image')){openLightbox(doc.fileData)}
+    else{const w=window.open();w.document.write(`<iframe src="${doc.fileData}" style="width:100%;height:100%;border:none"></iframe>`)}
+  }
+}
+
+// ═══════════════════════════════════════
+// MEDIA GALLERY
+// ═══════════════════════════════════════
+async function renderGallery(app){
+  const items=(await dbAll('media')).sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''));
+  const cats=[...new Set(items.map(i=>i.category||'allgemein'))];
+  
+  app.innerHTML=`
+  <div class="header"><button class="header-back" style="display:block" onclick="goBack()">←</button><div><h1>Galerie</h1><div class="header-sub">${items.length} Bilder</div></div><div></div></div>
+  <div class="chips"><div class="chip active" onclick="filterGallery('alle')">Alle</div>${cats.map(c=>`<div class="chip" onclick="filterGallery('${c}')">${c}</div>`).join('')}</div>
+  <div class="photo-grid" id="gallery-grid" style="grid-template-columns:repeat(3,1fr)">
+    ${items.map(m=>`<img class="photo-thumb gallery-item" data-cat="${m.category||'allgemein'}" src="${m.src}" onclick="openLightbox('${m.src}')" title="${m.refTitle||''}">`).join('')}
+    <div class="photo-add" onclick="addToGallery()">+</div>
+  </div>
+  ${!items.length?'<div class="empty"><div class="empty-icon">🖼️</div><h3>Galerie leer</h3><p>Fotos werden automatisch aus Wartung & Builds gesammelt</p></div>':''}`;
+}
+
+function filterGallery(cat){
+  document.querySelectorAll('.chips .chip').forEach(c=>c.classList.remove('active'));event.target.classList.add('active');
+  document.querySelectorAll('.gallery-item').forEach(el=>{el.style.display=(cat==='alle'||el.dataset.cat===cat)?'block':'none'});
+}
+
+async function addToGallery(){
+  const imgs=await pickImages();
+  for(const src of imgs){await dbPut('media',{id:genId(),src,category:'allgemein',createdAt:new Date().toISOString()})}
+  if(imgs.length){toast(`${imgs.length} Bild(er) hinzugefügt!`);navigate('gallery')}
+}
+
+// ═══════════════════════════════════════
+// JOURNAL
+// ═══════════════════════════════════════
+async function renderJournal(app){
+  const items=(await dbAll('journal')).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  app.innerHTML=`
+  <div class="header"><button class="header-back" style="display:block" onclick="goBack()">←</button><div><h1>Journal</h1><div class="header-sub">${items.length} Einträge</div></div><div></div></div>
+  ${items.length?items.map(j=>`
+    <div class="list-item" onclick="editJournal('${j.id}')">
+      <div class="list-icon bg-blue">${j.mood||'📝'}</div>
+      <div class="list-info"><h3>${j.title}</h3><p>${j.category||''} · ${fmtDate(j.date)}</p></div>
+      <div class="list-arrow">→</div>
+    </div>`).join(''):'<div class="empty"><div class="empty-icon">📝</div><h3>Kein Journal</h3><p>Erzähl die Geschichte deines Autos!</p></div>'}
+  <button class="fab" onclick="navigate('journal-add')">+</button>`;
+}
+
+function renderJournalAdd(app){
+  const edit=window._pageData?.item;
+  app.innerHTML=`
+  <div class="header"><button class="header-back" style="display:block" onclick="goBack()">←</button><div><h1>${edit?'Bearbeiten':'Neuer Eintrag'}</h1></div><div></div></div>
+  <div style="padding-top:12px">
+    <div class="form-group"><label class="form-label">Titel *</label><input class="form-input" id="j-title" value="${edit?.title||''}" placeholder="z.B. Erste Ausfahrt nach dem Winter"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Datum</label><input class="form-input" id="j-date" type="date" value="${edit?.date||new Date().toISOString().split('T')[0]}"></div>
+      <div class="form-group"><label class="form-label">Stimmung</label>
+        <select class="form-input" id="j-mood"><option>😊</option><option>🔥</option><option>😎</option><option>🤔</option><option>😤</option><option>💪</option><option>🏁</option><option>❤️</option></select>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Kategorie</label><input class="form-input" id="j-cat" value="${edit?.category||''}" placeholder="z.B. Ausfahrt, Werkstatt, Event"></div>
+    <div class="form-group"><label class="form-label">Text</label><textarea class="form-input" id="j-text" rows="8" placeholder="Schreib deine Geschichte...">${edit?.text||''}</textarea></div>
+    <div class="sec-title">Fotos</div>
+    <div class="photo-grid" id="j-photos">${(edit?.photos||[]).map(p=>`<img class="photo-thumb" src="${p}" onclick="openLightbox('${p}')">`).join('')}<div class="photo-add" onclick="addJournalPhotos()">+</div></div>
+    <div style="padding:0 16px 16px"><button class="btn btn-primary" onclick="saveJournal('${edit?.id||''}')">${edit?'Speichern':'Hinzufügen'}</button></div>
+    ${edit?`<button class="del-btn" onclick="delJournal('${edit.id}')">🗑 Löschen</button>`:''}
+  </div>`;
+  window._journalPhotos=edit?.photos?[...edit.photos]:[];
+}
+async function addJournalPhotos(){
+  const imgs=await pickImages();window._journalPhotos.push(...imgs);
+  $('j-photos').innerHTML=window._journalPhotos.map(p=>`<img class="photo-thumb" src="${p}" onclick="openLightbox('${p}')">`).join('')+`<div class="photo-add" onclick="addJournalPhotos()">+</div>`;
+}
+async function editJournal(id){const item=await dbGet('journal',id);navigate('journal-add',{item})}
+async function saveJournal(eid){
+  const title=$('j-title').value.trim();if(!title){toast('Titel ist Pflicht!');return}
+  const item={id:eid||genId(),title,date:$('j-date').value,mood:$('j-mood').value,category:$('j-cat').value,text:$('j-text').value,photos:window._journalPhotos||[],updatedAt:new Date().toISOString()};
+  if(!eid)item.createdAt=new Date().toISOString();
+  await dbPut('journal',item);toast('Gespeichert! ✅');goBack();
+}
+async function delJournal(id){if(confirm('Löschen?')){await dbDel('journal',id);toast('Gelöscht');navigate('journal')}}
+
+// ═══════════════════════════════════════
+// REMINDERS
+// ═══════════════════════════════════════
+async function renderReminders(app){
+  const items=(await dbAll('reminders')).sort((a,b)=>(a.dueDate||'z').localeCompare(b.dueDate||'z'));
+  const now=Date.now();
+  app.innerHTML=`
+  <div class="header"><button class="header-back" style="display:block" onclick="goBack()">←</button><div><h1>Erinnerungen</h1><div class="header-sub">${items.length} aktiv</div></div><div></div></div>
+  ${items.length?items.map(r=>{
+    const overdue=r.dueDate&&new Date(r.dueDate)<now;
+    return `<div class="list-item" onclick="editReminder('${r.id}')">
+      <div class="list-icon ${overdue?'bg-red':r.done?'bg-green':'bg-yellow'}">${overdue?'⚠️':r.done?'✅':'🔔'}</div>
+      <div class="list-info"><h3>${r.title}</h3><p>${r.dueDate?fmtDate(r.dueDate):''} ${r.dueKm?`bei ${fmtInt(r.dueKm)} km`:''}</p></div>
+      ${overdue?'<span class="list-badge">Überfällig</span>':''}
+    </div>`;}).join(''):'<div class="empty"><div class="empty-icon">🔔</div><h3>Keine Erinnerungen</h3><p>Setze zeit- oder kilometerbasierte Erinnerungen</p></div>'}
+  <button class="fab" onclick="navigate('reminder-add')">+</button>`;
+}
+
+function renderReminderAdd(app){
+  const edit=window._pageData?.item;
+  app.innerHTML=`
+  <div class="header"><button class="header-back" style="display:block" onclick="goBack()">←</button><div><h1>${edit?'Bearbeiten':'Neue Erinnerung'}</h1></div><div></div></div>
+  <div style="padding-top:12px">
+    <div class="form-group"><label class="form-label">Titel *</label><input class="form-input" id="r-title" value="${edit?.title||''}" placeholder="z.B. Ölwechsel fällig"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Fällig am</label><input class="form-input" id="r-date" type="date" value="${edit?.dueDate||''}"></div>
+      <div class="form-group"><label class="form-label">Fällig bei (km)</label><input class="form-input" id="r-km" type="number" value="${edit?.dueKm||''}" placeholder="z.B. 200000"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Notizen</label><textarea class="form-input" id="r-notes" rows="2">${edit?.notes||''}</textarea></div>
+    <div style="padding:0 16px 16px"><button class="btn btn-primary" onclick="saveReminder('${edit?.id||''}')">${edit?'Speichern':'Hinzufügen'}</button></div>
+    ${edit?`<button class="del-btn" onclick="delReminder('${edit.id}')">🗑 Löschen</button>`:''}
+  </div>`;
+}
+async function editReminder(id){const item=await dbGet('reminders',id);navigate('reminder-add',{item})}
+async function saveReminder(eid){
+  const title=$('r-title').value.trim();if(!title){toast('Titel ist Pflicht!');return}
+  const item={id:eid||genId(),title,dueDate:$('r-date').value,dueKm:parseInt($('r-km').value)||0,notes:$('r-notes').value,done:false,updatedAt:new Date().toISOString()};
+  if(!eid)item.createdAt=new Date().toISOString();
+  await dbPut('reminders',item);toast('Gespeichert! 🔔');goBack();
+}
+async function delReminder(id){if(confirm('Löschen?')){await dbDel('reminders',id);toast('Gelöscht');navigate('reminders')}}
+
+// ═══════════════════════════════════════
+// SERVICE PLANNER
+// ═══════════════════════════════════════
+async function renderServices(app){
+  const items=(await dbAll('services')).sort((a,b)=>a.intervalKm-b.intervalKm);
+  app.innerHTML=`
+  <div class="header"><button class="header-back" style="display:block" onclick="goBack()">←</button><div><h1>Service-Plan</h1><div class="header-sub">${items.length} Intervalle</div></div><div></div></div>
+  ${items.length?items.map(s=>{
+    const nextKm=s.lastDoneKm?s.lastDoneKm+s.intervalKm:vehicle.mileage+s.intervalKm;
+    const remaining=nextKm-vehicle.mileage;
+    const urgent=remaining<1000;
+    return `<div class="list-item" onclick="editService('${s.id}')">
+      <div class="list-icon ${urgent?'bg-red':'bg-green'}">📋</div>
+      <div class="list-info"><h3>${s.name}</h3><p>Alle ${fmtInt(s.intervalKm)} km ${s.intervalMonths?`/ ${s.intervalMonths} Monate`:''}</p></div>
+      <div style="text-align:right"><div style="font-size:13px;font-weight:700;color:${urgent?'var(--accent)':'var(--green)'}">${remaining>0?`in ${fmtInt(remaining)} km`:'FÄLLIG!'}</div></div>
+    </div>`;}).join(''):'<div class="empty"><div class="empty-icon">📋</div><h3>Keine Service-Pläne</h3><p>Definiere wiederkehrende Wartungsintervalle</p></div>'}
+  <button class="fab" onclick="navigate('service-add')">+</button>`;
+}
+
+function renderServiceAdd(app){
+  const edit=window._pageData?.item;
+  app.innerHTML=`
+  <div class="header"><button class="header-back" style="display:block" onclick="goBack()">←</button><div><h1>${edit?'Bearbeiten':'Neues Intervall'}</h1></div><div></div></div>
+  <div style="padding-top:12px">
+    <div class="form-group"><label class="form-label">Service-Name *</label><input class="form-input" id="s-name" value="${edit?.name||''}" placeholder="z.B. Ölwechsel"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Intervall (km)</label><input class="form-input" id="s-km" type="number" value="${edit?.intervalKm||''}" placeholder="z.B. 10000"></div>
+      <div class="form-group"><label class="form-label">Intervall (Monate)</label><input class="form-input" id="s-months" type="number" value="${edit?.intervalMonths||''}" placeholder="z.B. 12"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Zuletzt erledigt bei (km)</label><input class="form-input" id="s-lastkm" type="number" value="${edit?.lastDoneKm||''}" placeholder="z.B. 180000"></div>
+    <div class="form-group"><label class="form-label">Notizen</label><textarea class="form-input" id="s-notes" rows="2">${edit?.notes||''}</textarea></div>
+    <div style="padding:0 16px 16px"><button class="btn btn-primary" onclick="saveService('${edit?.id||''}')">${edit?'Speichern':'Hinzufügen'}</button></div>
+    ${edit?`<button class="del-btn" onclick="delService('${edit.id}')">🗑 Löschen</button>`:''}
+  </div>`;
+}
+async function editService(id){const item=await dbGet('services',id);navigate('service-add',{item})}
+async function saveService(eid){
+  const name=$('s-name').value.trim();if(!name){toast('Name ist Pflicht!');return}
+  const item={id:eid||genId(),name,intervalKm:parseInt($('s-km').value)||10000,intervalMonths:parseInt($('s-months').value)||0,lastDoneKm:parseInt($('s-lastkm').value)||0,notes:$('s-notes').value,updatedAt:new Date().toISOString()};
+  if(!eid)item.createdAt=new Date().toISOString();
+  await dbPut('services',item);toast('Gespeichert! ✅');goBack();
+}
+async function delService(id){if(confirm('Löschen?')){await dbDel('services',id);toast('Gelöscht');navigate('services')}}
+
+// ═══════════════════════════════════════
+// EDIT VEHICLE
+// ═══════════════════════════════════════
+function renderEditVehicle(app){
+  const v=vehicle;
+  app.innerHTML=`
+  <div class="header"><button class="header-back" style="display:block" onclick="goBack()">←</button><div><h1>Fahrzeug bearbeiten</h1></div><div></div></div>
+  <div style="padding-top:12px">
+    <div class="form-group"><label class="form-label">Marke</label><input class="form-input" id="ev-brand" value="${v.brand}"></div>
+    <div class="form-group"><label class="form-label">Modell</label><input class="form-input" id="ev-model" value="${v.model}"></div>
+    <div class="form-group"><label class="form-label">Generation</label><input class="form-input" id="ev-gen" value="${v.generation||''}"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Motor</label><input class="form-input" id="ev-engine" value="${v.engine||''}"></div>
+      <div class="form-group"><label class="form-label">Getriebe</label><select class="form-input" id="ev-trans"><option value="">—</option><option ${v.transmission==='Schaltgetriebe'?'selected':''}>Schaltgetriebe</option><option ${v.transmission==='Automatik'?'selected':''}>Automatik</option><option ${v.transmission==='Doppelkupplung'?'selected':''}>Doppelkupplung</option><option ${v.transmission==='Sequentiell'?'selected':''}>Sequentiell</option></select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Kilometerstand</label><input class="form-input" id="ev-km" type="number" value="${v.mileage||0}"></div>
+      <div class="form-group"><label class="form-label">Leistung (PS)</label><input class="form-input" id="ev-hp" type="number" value="${v.horsepower||''}"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Baujahr</label><input class="form-input" id="ev-year" type="number" value="${v.year||''}"></div>
+      <div class="form-group"><label class="form-label">Farbe</label><input class="form-input" id="ev-color" value="${v.color||''}"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Kaufdatum</label><input class="form-input" id="ev-pdate" type="date" value="${v.purchaseDate||''}"></div>
+      <div class="form-group"><label class="form-label">Kaufpreis (€)</label><input class="form-input" id="ev-pprice" type="number" value="${v.purchasePrice||0}"></div>
+    </div>
+    <div class="form-group"><label class="form-label">VIN</label><input class="form-input" id="ev-vin" value="${v.vin||''}"></div>
+    <div class="form-group"><label class="form-label">Notizen</label><textarea class="form-input" id="ev-notes" rows="3">${v.notes||''}</textarea></div>
+    <div style="padding:0 16px 16px"><button class="btn btn-primary" onclick="saveVehicle()">Speichern</button></div>
+    <div style="padding:0 16px 16px"><button class="btn btn-secondary" onclick="changeHero()">📷 Hero-Bild ändern</button></div>
+  </div>`;
+}
+
+async function saveVehicle(){
+  vehicle.brand=$('ev-brand').value.trim();
+  vehicle.model=$('ev-model').value.trim();
+  vehicle.generation=$('ev-gen').value.trim();
+  vehicle.engine=$('ev-engine').value.trim();
+  vehicle.transmission=$('ev-trans').value;
+  vehicle.mileage=parseInt($('ev-km').value)||0;
+  vehicle.horsepower=parseInt($('ev-hp').value)||0;
+  vehicle.year=parseInt($('ev-year').value)||0;
+  vehicle.color=$('ev-color').value.trim();
+  vehicle.purchaseDate=$('ev-pdate').value;
+  vehicle.purchasePrice=parseFloat($('ev-pprice').value)||0;
+  vehicle.vin=$('ev-vin').value.trim();
+  vehicle.notes=$('ev-notes').value;
+  await dbPut('vehicle',vehicle);
+  toast('Fahrzeug aktualisiert! ✅');goBack();
+}
+
+// ═══════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════
+async function renderSettings(app){
+  const maintCount=(await dbAll('maintenance')).length;
+  const fuelCount=(await dbAll('fuel')).length;
+  const partsCount=(await dbAll('parts')).length;
+  
+  app.innerHTML=`
+  <div class="header"><button class="header-back" style="display:block" onclick="goBack()">←</button><div><h1>Einstellungen</h1></div><div></div></div>
+
+  <div class="sec-title fade-up">Backup & Restore</div>
+  <div class="card fade-up fade-up-1">
+    <p style="font-size:13px;color:var(--text2);margin-bottom:16px">Exportiere alle Daten als JSON-Datei. Du kannst sie jederzeit wiederherstellen.</p>
+    <button class="btn btn-primary" onclick="exportData()" style="margin-bottom:10px">📥 Backup exportieren</button>
+    <button class="btn btn-secondary" onclick="$('json-input').click()">📤 Backup importieren</button>
+  </div>
+
+  <div class="sec-title fade-up fade-up-2">Statistiken</div>
+  <div class="card fade-up fade-up-3">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px">
+      <div><span style="color:var(--text3)">Wartungseinträge</span><div style="font-weight:700">${maintCount}</div></div>
+      <div><span style="color:var(--text3)">Tankeinträge</span><div style="font-weight:700">${fuelCount}</div></div>
+      <div><span style="color:var(--text3)">Teile</span><div style="font-weight:700">${partsCount}</div></div>
+      <div><span style="color:var(--text3)">DB Version</span><div style="font-weight:700">${DB_VER}</div></div>
+    </div>
+  </div>
+
+  <div class="sec-title fade-up fade-up-3">Gefahrenzone</div>
+  <div class="card fade-up fade-up-4">
+    <button class="btn btn-secondary" onclick="resetApp()" style="border-color:rgba(255,59,59,.3);color:var(--accent)">🗑 Alle Daten löschen</button>
+  </div>
+
+  <div style="text-align:center;padding:30px;color:var(--text3);font-size:12px">
+    <div style="font-weight:800;font-size:16px;margin-bottom:4px">GARAGE<span style="color:var(--accent)">.</span></div>
+    Ultimate Car OS · v1.0.0<br>
+    Alle Daten lokal auf deinem Gerät
+  </div>`;
+}
+
+// ──── BACKUP / RESTORE ────
+async function exportData(){
+  const backup={version:DB_VER,date:new Date().toISOString(),vehicle};
+  for(const store of STORES){if(store!=='vehicle')backup[store]=await dbAll(store)}
+  const blob=new Blob([JSON.stringify(backup)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=`garage-backup-${new Date().toISOString().split('T')[0]}.json`;
+  a.click();URL.revokeObjectURL(url);
+  toast('Backup exportiert! 📥');
+}
+
+$('json-input').addEventListener('change',async e=>{
+  const file=e.target.files[0];if(!file)return;
+  const text=await file.text();
+  try{
+    const data=JSON.parse(text);
+    if(!data.vehicle){toast('Ungültige Backup-Datei!');return}
+    if(!confirm('Alle aktuellen Daten werden überschrieben. Fortfahren?'))return;
+    vehicle=data.vehicle;await dbPut('vehicle',vehicle);
+    for(const store of STORES){
+      if(store!=='vehicle'&&data[store]){
+        for(const item of data[store])await dbPut(store,item);
+      }
+    }
+    toast('Backup wiederhergestellt! ✅');navigate('dashboard');
+  }catch(err){toast('Fehler beim Import: '+err.message)}
+  $('json-input').value='';
+});
+
+async function resetApp(){
+  if(!confirm('ALLE Daten unwiderruflich löschen?'))return;
+  if(!confirm('Wirklich sicher? Das kann nicht rückgängig gemacht werden!'))return;
+  for(const store of STORES){
+    const items=await dbAll(store);
+    for(const item of items)await dbDel(store,item.id);
+  }
+  vehicle=null;
+  navigate('onboard');
+  toast('Alle Daten gelöscht');
+}
+
+// ═══════════════════════════════════════
+// APP INIT
+// ═══════════════════════════════════════
+async function init(){
+  await openDB();
+  vehicle=await dbGet('vehicle','main');
+  if(!vehicle){navigate('onboard')}
+  else{navigate('dashboard')}
+  
+  // Register Service Worker
+  if('serviceWorker' in navigator){
+    try{await navigator.serviceWorker.register('./sw.js');console.log('SW registered')}
+    catch(e){console.log('SW failed:',e)}
+  }
+}
+
+init();
+</script>
+</body>
+</html>
